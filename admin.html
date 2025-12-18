@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Admin Rib Casas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial;background:#f2f4f6}
+.box{max-width:900px;margin:40px auto;background:#fff;padding:25px;border-radius:10px}
+input,textarea,button{width:100%;padding:10px;margin:6px 0}
+button{background:#0b3c5d;color:#fff;border:none;border-radius:5px}
+.item{border:1px solid #ccc;padding:10px;margin-top:10px}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="loginBox">
+<h2>Login Admin</h2>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+</div>
+
+<div class="box" id="panel" style="display:none">
+
+<h2>Painel Administrativo</h2>
+
+<h3>Configurações</h3>
+<input id="empresa" placeholder="Nome da empresa">
+<input id="slogan" placeholder="Slogan">
+<input id="whats" placeholder="WhatsApp (somente números)">
+<button onclick="salvarConfig()">Salvar</button>
+
+<h3>Texto de Pagamento</h3>
+<textarea id="pagamento"></textarea>
+<button onclick="salvarPagamento()">Salvar</button>
+
+<h3>Adicionar Imóvel</h3>
+<input id="img" placeholder="URL da imagem">
+<input id="titulo" placeholder="Título">
+<textarea id="desc" placeholder="Descrição"></textarea>
+<button onclick="addImovel()">Adicionar</button>
+
+<h3>Depoimentos</h3>
+<input id="nomeDep" placeholder="Nome">
+<textarea id="textoDep"></textarea>
+<button onclick="addDep()">Adicionar</button>
+
+</div>
+
+<script>
+function login(){
+ if(user.value==="admin" && pass.value==="123456"){
+  loginBox.style.display="none";
+  panel.style.display="block";
+ } else alert("Login inválido");
+}
+
+function salvarConfig(){
+ localStorage.setItem("config",JSON.stringify({
+  empresa:empresa.value,
+  slogan:slogan.value,
+  whats:whats.value
+ }));
+ alert("Configurações salvas");
+}
+
+function salvarPagamento(){
+ localStorage.setItem("pagamento",pagamento.value);
+ alert("Texto salvo");
+}
+
+function addImovel(){
+ const l=JSON.parse(localStorage.getItem("imoveis")||"[]");
+ l.push({img:img.value,titulo:titulo.value,desc:desc.value});
+ localStorage.setItem("imoveis",JSON.stringify(l));
+ alert("Imóvel adicionado");
+}
+
+function addDep(){
+ const d=JSON.parse(localStorage.getItem("deps")||"[]");
+ d.push({nome:nomeDep.value,texto:textoDep.value});
+ localStorage.setItem("deps",JSON.stringify(d));
+ alert("Depoimento adicionado");
+}
+</script>
+
+</body>
+</html>
