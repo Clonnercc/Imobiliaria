@@ -212,5 +212,47 @@
     © 2025 Rib Casas — Todos os direitos reservados
 </footer>
 
+   <script>
+const cfg = JSON.parse(localStorage.getItem("config")||"{}");
+if(cfg.empresa) document.querySelector("header h1").innerText = cfg.empresa;
+if(cfg.slogan) document.querySelector("header p").innerText = cfg.slogan;
+
+if(cfg.whats){
+ document.querySelectorAll("a[href*='wa.me']").forEach(b=>{
+  b.href="https://wa.me/55"+cfg.whats.replace(/\D/g,"");
+ });
+}
+
+const imoveis = JSON.parse(localStorage.getItem("imoveis")||"[]");
+const grid = document.querySelector(".grid");
+if(imoveis.length){
+ grid.innerHTML="";
+ imoveis.forEach(i=>{
+  grid.innerHTML+=`
+  <div class="card">
+   <img src="${i.img}">
+   <div class="content">
+    <h3>${i.titulo}</h3>
+    <p>${i.desc}</p>
+   </div>
+  </div>`;
+ });
+}
+
+const deps = JSON.parse(localStorage.getItem("deps")||"[]");
+const box = document.querySelector(".comments");
+if(deps.length){
+ box.innerHTML="<h2>Depoimentos</h2>";
+ deps.forEach(d=>{
+  box.innerHTML+=`<div class="comment"><strong>${d.nome}</strong><p>${d.texto}</p></div>`;
+ });
+}
+
+const pag = localStorage.getItem("pagamento");
+if(pag){
+ document.querySelector(".info p").innerText = pag;
+}
+</script>
+    
 </body>
 </html>
