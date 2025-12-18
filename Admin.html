@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel ADM - Rib Casas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: Arial; background:#f2f4f6; margin:0 }
+.box { max-width:900px; margin:40px auto; background:#fff; padding:30px; border-radius:10px }
+input, textarea, button { width:100%; padding:10px; margin:6px 0 }
+button { background:#0b3c5d; color:#fff; border:none; cursor:pointer; border-radius:5px }
+button:hover { background:#08324d }
+hr { margin:25px 0 }
+.item { border:1px solid #ddd; padding:15px; border-radius:8px; margin-bottom:10px }
+.remove { background:#b00020 }
+.remove:hover { background:#900018 }
+.hidden { display:none }
+</style>
+</head>
+
+<body>
+
+<div class="box" id="loginBox">
+<h2>Login ADM</h2>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+</div>
+
+<div class="box hidden" id="panel">
+
+<h2>Painel Administrativo - Rib Casas</h2>
+
+<hr>
+<h3>Configurações Gerais</h3>
+<input id="empresa" placeholder="Nome da empresa">
+<input id="slogan" placeholder="Texto principal do site">
+<input id="whats" placeholder="WhatsApp (somente números)">
+<button onclick="salvarConfig()">Salvar Configurações</button>
+
+<hr>
+<h3>Texto de Pagamento / Financiamento</h3>
+<textarea id="pagamento" rows="4"></textarea>
+<button onclick="salvarPagamento()">Salvar Texto</button>
+
+<hr>
+<h3>Imóveis / Produtos</h3>
+
+<div id="listaImoveis"></div>
+
+<h4>Adicionar novo imóvel</h4>
+<input id="img" placeholder="URL da imagem">
+<input id="titulo" placeholder="Título do imóvel">
+<textarea id="desc" placeholder="Descrição"></textarea>
+<button onclick="addImovel()">Adicionar Imóvel</button>
+
+<hr>
+<h3>Depoimentos</h3>
+<div id="listaDepoimentos"></div>
+
+<input id="nomeDep" placeholder="Nome do cliente">
+<textarea id="textoDep" placeholder="Comentário"></textarea>
+<button onclick="addDep()">Adicionar Depoimento</button>
+
+<p id="msg"></p>
+
+</div>
+
+<script>
+const USER="admin", PASS="123456";
+
+function login(){
+ if(user.value==USER && pass.value==PASS){
+  loginBox.classList.add("hidden");
+  panel.classList.remove("hidden");
+  carregarTudo();
+ } else alert("Login inválido");
+}
+
+function salvarConfig(){
+ localStorage.setItem("config", JSON.stringify({
+  empresa:empresa.value,
+  slogan:slogan.value,
+  whats:whats.value
+ }));
+ msg.innerText="Configurações salvas";
+}
+
+function salvarPagamento(){
+ localStorage.setItem("pagamento", pagamento.value);
+ msg.innerText="Texto de pagamento salvo";
+}
+
+function addImovel(){
+ const lista = JSON.parse(localStorage.getItem("imoveis")||"[]");
+ lista.push({img:img.value,titulo:titulo.value,desc:desc.value});
+ localStorage.setItem("imoveis",JSON.stringify(lista));
+ carregarImoveis();
+}
+
+function removerImovel(i){
+ const lista = JSON.parse(localStorage.getItem("imoveis"));
+ lista.splice(i,1);
+ localStorage.setItem("imoveis",JSON.stringify(lista));
+ carregarImoveis();
+}
+
+function carregarImoveis(){
+ listaImoveis.innerHTML="";
+ const lista = JSON.parse(localStorage.getItem("imoveis")||"[]");
+ lista.forEach((x,i)=>{
+  listaImoveis.innerHTML+=`
+   <div class="item">
+    <strong>${x.titulo}</strong>
+    <p>${x.desc}</p>
+    <button class="remove" onclick="removerImovel(${i})">Remover</button>
+   </div>`;
+ });
+}
+
+function addDep(){
+ const lista = JSON.parse(localStorage.getItem("deps")||"[]");
+ lista.push({nome:nomeDep.value,texto:textoDep.value});
+ localStorage.setItem("deps",JSON.stringify(lista));
+ carregarDeps();
+}
+
+function removerDep(i){
+ const lista = JSON.parse(localStorage.getItem("deps"));
+ lista.splice(i,1);
+ localStorage.setItem("deps",JSON.stringify(lista));
+ carregarDeps();
+}
+
+function carregarDeps(){
+ listaDepoimentos.innerHTML="";
+ const lista = JSON.parse(localStorage.getItem("deps")||"[]");
+ lista.forEach((x,i)=>{
+  listaDepoimentos.innerHTML+=`
+   <div class="item">
+    <strong>${x.nome}</strong>
+    <p>${x.texto}</p>
+    <button class="remove" onclick="removerDep(${i})">Remover</button>
+   </div>`;
+ });
+}
+
+function carregarTudo(){
+ const c = JSON.parse(localStorage.getItem("config")||"{}");
+ empresa.value=c.empresa||"";
+ slogan.value=c.slogan||"";
+ whats.value=c.whats||"";
+ pagamento.value=localStorage.getItem("pagamento")||"";
+ carregarImoveis();
+ carregarDeps();
+}
+</script>
+
+</body>
+</html>
